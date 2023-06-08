@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.toto2.board.BoardMapper">
+
+    <insert id="insboard">
+        insert into t_toto
+        set title = #{title},
+            ctnt = #{ctnt},
+            writer = #{writer}
+    </insert>
+
+    <select id="selboardAll" resultType="BoardSelAll">
+        SELECT itoto, title, ctnt, writer, created_at createdAt, updated_at updatedAt
+        FROM t_toto
+        order by itoto desc
+        limit #{startIdx}, #{row}
+    </select>
+
+    <select id="selboardDetail" resultType="BoardDetail">
+        SELECT itoto, title, ctnt, writer, created_at createdAt, updated_at updatedAt
+        FROM t_toto
+        where itoto = #{itoto}
+    </select>
+
+    <update id="updBoard">
+        update t_toto
+        set title = #{title},
+        ctnt = #{ctnt},
+        writer = #{writer},
+        updated_at = now()
+        where itoto = #{itoto}
+    </update>
+
+    <delete id="delBoard">
+        delete from t_toto
+        where itoto = #{itoto}
+    </delete>
+
+</mapper>

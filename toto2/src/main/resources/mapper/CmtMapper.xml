@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.toto2.cmt.CmtMapper">
+    <insert id="insCmt">
+        insert into t_toto_cmt
+        set itoto = #{itoto},
+            ctnt = #{ctnt}
+    </insert>
+
+    <select id="selCmtAll" resultType="CmtEntity">
+        SELECT itoto_cmt, itoto, ctnt, created_at createdAt, updated_at updatedAt
+        FROM t_toto_cmt
+        order by itoto_cmt desc
+        LIMIT #{startIdx}, #{row}
+    </select>
+
+    <select id="selCmtOne" resultType="CmtEntity">
+        SELECT itoto_cmt, itoto, ctnt, created_at createdAt, updated_at updatedAt
+    </select>
+
+    <update id="updCmt">
+        update t_toto_cmt
+        set ctnt = #{ctnt},
+            updated_at = now()
+        where itoto_cmt = #{itotoCmt} and itoto = #{itoto}
+    </update>
+
+    <delete id="delCmt">
+        delete from t_toto_cmt
+        where itoto_cmt = #{itotoCmt} and itoto = #{itoto}
+    </delete>
+
+
+</mapper>
