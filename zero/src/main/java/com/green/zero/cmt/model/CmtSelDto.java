@@ -1,9 +1,9 @@
-package com.green.zero.board.model;
+package com.green.zero.cmt.model;
 
 import lombok.Data;
 
 @Data
-public class BoardSelDto {
+public class CmtSelDto {
     private int iboard;
     private int startIdx;
     private int page;

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.zero.cmt.CmtMapper">
+
+    <insert id="insCmt" useGeneratedKeys="true" keyProperty="iboardCmt">
+        INSERT INTO t_board_cmt
+        SET iboard = #{iboard},
+            iuser = #{iuser},
+            ctnt = #{ctnt}
+    </insert>
+
+    <select id="selCmt" resultType="CmtSelVo">
+        select iboard_cmt iboardCmt, iboard, iuser, ctnt, created_at createdAt, updated_at updatedAt
+        from t_board_cmt
+        where iboard = #{iboard}
+        Limit #{startIdx}, #{row}
+    </select>
+
+    <select id="selBoardCmtRowCountByIBoard">
+        select count(iboard_cmt) from t_board_cmt
+        where iboard = #{iboard}
+    </select>
+
+    <update id="updCmt">
+        update t_board_cmt
+        set ctnt = #{ctnt}
+        where iboard_cmt = #{iboardCmt} and iuser = #{iuser}
+    </update>
+
+    <delete id="delCmt">
+        delete from t_board_cmt
+        where iboard_cmt = #{iboardCmt} and iuser = #{iuser}
+    </delete>
+
+</mapper>

@@ -1,8 +1,6 @@
 package com.green.zero.board;
 
-import com.green.zero.board.model.BoardInsDto;
-import com.green.zero.board.model.BoardSelDto;
-import com.green.zero.board.model.BoardSelVo;
+import com.green.zero.board.model.*;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +35,26 @@ public class BoardController {
     @GetMapping("/maxpage")
     public int getBoardMaxPage(@RequestParam int row){
         return service.selBoardMax(row);
+    }
+    // 게시물을 유저 아이디 별로 보기
+    @GetMapping("/{iboard}")
+    public BoardSelVo getBoardDetail(@PathVariable int iboard){
+        BoardSelDto dto = new BoardSelDto();
+        dto.setIboard(iboard);
+        return service.selBoardDetail(dto);
+    }
+
+    @DeleteMapping("/{iboard}")
+    public int deleteBoard(@RequestParam int iboard,
+                           @RequestParam int iuser){
+        BoardDelDto dto = new BoardDelDto();
+        dto.setIboard(iboard);
+        dto.setIuser(iuser);
+        return service.delBoard(dto);
+    }
+
+    @PutMapping
+    public int putBoard(@RequestBody BoardUpdDto dto){
+        return service.updBoard(dto);
     }
 }
