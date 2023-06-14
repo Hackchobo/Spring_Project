@@ -1,5 +1,7 @@
 package com.green.todoapp;
 
+import com.google.gson.Gson;
+import com.green.todoapp.model.TodoFinishDto;
 import com.green.todoapp.model.TodoInsDto;
 import com.green.todoapp.model.TodoVo;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,14 +35,19 @@ class TodoControllerTest {
     private TodoSevice sevice;
 
     @Test // JUNIT 언어임
-    @DisplayName("TODO - 등록")
+    @DisplayName("TODO - Todo 등록")
     void postTodo() throws Exception {
         //Given - 테스트셋팅(이유 : 컨트롤은 서비스를 참조하는데 다만들면 일이 커짐 그래서 호출이 된다면 가짜 서비스단을 이용하여 하는것
         //테스트에서 구체화하고자 하는 행동을 시작하기 전에 테스트 상태를 설명하는 부분
         given(sevice.insTodo(any(TodoInsDto.class))).willReturn(3);
         //When - 실제 실행
         //구체화하고자 하는 그 행동 - 데이터를 가져오는 단계
-        String json = "{\"ctnt\": \"빨래 개기\"}";
+        TodoInsDto dto = new TodoInsDto();
+        dto.setCtnt("빨래 개기");
+
+        Gson gson = new Gson();
+        //String json = "{\"ctnt\": \"빨래 개기\"}";
+        String json = gson.toJson(dto); // 48번줄의 역활을 해준다.
         ResultActions ra =mvc.perform(post("/api/todo")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -56,7 +64,7 @@ class TodoControllerTest {
     }
 
     @Test // JUNIT 언어임
-    @DisplayName("TODO - 리스트")
+    @DisplayName("TODO - Todo 리스트")
     void getTodo() throws Exception {
         //given - when - then
 
@@ -71,6 +79,51 @@ class TodoControllerTest {
                 .andExpect(jsonPath("*.itodo").exists()) // *(와일드) itodo 가 값에 들어가 있는지 확인 해준다.
                 .andExpect(jsonPath("[0].itodo").value(1)) //1의 값이 들어있는지 확인 해주는 구문
                 .andDo(print());
+
+    }
+
+    @Test // JUNIT 언어임
+    @DisplayName("TODO - Todo 패치")
+    void updTodo() throws Exception{
+
+        //given
+        given(sevice.updFinish(any(TodoFinishDto.class))).willReturn(1);
+
+        // when
+        TodoFinishDto dto = new TodoFinishDto();
+        dto.setItodo(1);
+
+        Gson gson = new Gson();
+
+        String json = gson.toJson(dto);
+
+        mvc.perform(patch("/api/todo")
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+
+        //Then
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"))
+                .andDo(print());
+        verify(sevice).updFinish(any());
+    }
+
+    @Test
+    @DisplayName("TODO - Todo 삭제")
+    void delTodo() throws Exception{
+        int itodo = 10;
+
+        given(sevice.updDelete(anyInt())).willReturn(itodo);
+
+        ResultActions ra = mvc.perform(delete("/api/todo/?itodo=" + itodo)
+                            .param("itodo", String.valueOf(itodo)));
+
+        ra.andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(itodo)))
+                .andDo(print());
+
+        verify(sevice).updDelete(anyInt());
+
 
     }
 }

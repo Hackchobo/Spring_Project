@@ -1,9 +1,6 @@
 package com.green.todoapp;
 
-import com.green.todoapp.model.TodoEntity;
-import com.green.todoapp.model.TodoInsDto;
-import com.green.todoapp.model.TodoSelAllDto;
-import com.green.todoapp.model.TodoVo;
+import com.green.todoapp.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +61,34 @@ class TodoSeviceTest {
         assertEquals(mockList, todoVos);
 
         verify(mapper).selTodo();
+    }
 
+    @Test
+    @DisplayName("TodoService - Todo 완료처리 토글")
+    void updFinish() {
+        TodoEntity entity = new TodoEntity();
+        entity.setItodo(1);
+        when(mapper.updFinish(any())).thenReturn(0);
 
+        TodoFinishDto dto = new TodoFinishDto();
+        dto.setItodo(1);
+        int result = service.updFinish(dto);
+
+        assertEquals(0,result);
+
+        verify(mapper).updFinish(any());
+    }
+
+    @Test
+    @DisplayName("TodoService - Todo 삭제")
+    void updDelete(){
+        int expectedResult =1;
+        when(mapper.updDelete(any(TodoEntity.class))).thenReturn(expectedResult);
+
+        int result = service.updDelete(anyInt());
+
+        assertEquals(expectedResult,result);
+
+        verify(mapper).updDelete(any(TodoEntity.class));
     }
 }
