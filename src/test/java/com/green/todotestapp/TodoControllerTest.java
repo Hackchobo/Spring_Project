@@ -1,6 +1,8 @@
 package com.green.todotestapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.green.todotestapp.model.TodoInsDto;
 import com.green.todotestapp.model.TodoRes;
 import org.junit.jupiter.api.DisplayName;
@@ -23,11 +25,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TodoControllerTest.class)
+@MockMvcConfig
+@WebMvcTest(TodoController.class)
 class TodoControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mvc; // 인코딩을 하면 오류가 안뜬다.
 
     @MockBean
     private TodoService service;
@@ -44,11 +47,13 @@ class TodoControllerTest {
 
         String originalFileNm = "95d52bb0-c1a5-4409-8463-c25517e7f250.jpg";
         String contentType = "jpg";
-        String filePath = "D:/home/download/user/1/" + originalFileNm;
+        String filePath = "D:/home/download/user/1/"+ originalFileNm;
         FileInputStream fileInputStream = new FileInputStream(filePath);
-        MockMultipartFile pic = new MockMultipartFile("pic", originalFileNm, "jpg",fileInputStream);
+        MockMultipartFile pic = new MockMultipartFile("pic", originalFileNm, contentType, fileInputStream);
 
-        ObjectMapper om = new ObjectMapper();
+        ObjectMapper om = new ObjectMapper(); // Json 으로 되어있는 것을 자바객체로 바꾸어 주는 객체임
+        om.registerModule(new JavaTimeModule());
+        om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String resJson = om.writeValueAsString(res); // JSon으로 되어있는 것을 자바객체로 바꾸어 주는 객체임
 
         mvc.perform(multipart("/api/todo")

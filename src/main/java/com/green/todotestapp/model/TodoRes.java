@@ -1,9 +1,14 @@
 package com.green.todotestapp.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@ToString
 public class TodoRes { // 응답할때 사용되는 것
     private Long itodo;
     private String ctnt;

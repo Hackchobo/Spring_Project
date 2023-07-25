@@ -7,6 +7,7 @@ import com.green.todotestapp.model.TodoVo;
 import com.green.todotestapp.utils.MyFileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +22,9 @@ import java.util.List;
 public class TodoServiceImpl implements TodoService{
 
     private final TodoMapper MAPPER;
-    private final String FILE_DIR;
+    private final String FILE_DIR; //절대경로
 
+    @Autowired
     public TodoServiceImpl(TodoMapper MAPPER, @Value("${file.dir}") String FileDir) {
         this.MAPPER = MAPPER;
         this.FILE_DIR = MyFileUtils.getAbsolutePath(FileDir);

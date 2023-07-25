@@ -1,6 +1,8 @@
 package com.green.todotestapp;
 
 import com.green.todotestapp.model.TodoInsDto;
+import com.green.todotestapp.model.TodoInsParam;
+import com.green.todotestapp.model.TodoRes;
 import com.green.todotestapp.model.TodoVo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,8 +10,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +27,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @Import( {TodoServiceImpl.class})
+@TestPropertySource(properties = {
+        "file.dir=/home/download"
+}) // 이부분을 넣어주면 TodoServicelmpl 쪽 file_DIR에 home/download 부분이 들어 감
 class TodoServiceTest {
 
     @MockBean
@@ -29,23 +38,41 @@ class TodoServiceTest {
     @Autowired
     private TodoService service;
 
-   /* @Test
-    void insTodo() {
-        //when
+    @Test
+    void insTodo() throws Exception {
+
+        String originalFileNm = "95d52bb0-c1a5-4409-8463-c25517e7f250.jpg";
+        String contentType = "jpg";
+        String filePath = "D:/home/download/user/1/"+ originalFileNm;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MultipartFile pic = new MockMultipartFile("pic", originalFileNm, contentType, fileInputStream);
+
+        TodoInsParam p1= new TodoInsParam();
+        p1.setCtnt("테스트3");
+        p1.setPic(pic);
+
+        when(mapper.insTodo(any())).thenReturn(1);
+
+        TodoRes r1 = service.insTodo(p1);
+
+        assertEquals(p1.getCtnt(), r1.getCtnt());
+
+        verify(mapper).insTodo(any());
+        /*//when
         final Long VAL = 3L;
         when(mapper.insTodo(any())).thenReturn(3); // 역활을 줌
 
         TodoInsDto p1 = new TodoInsDto();
-        *//*p1.setCtnt("테스트1");
-        p1.setPic("main.jpg");*//*
+        p1.setCtnt("테스트1");
+        p1.setPic("main.jpg");
         p1.setItodo(VAL);
         Long r1 = service.insTodo(p1);
         assertEquals(VAL,r1);
 
-        verify(mapper).insTodo(any());
+        verify(mapper).insTodo(any());*/
     }
 
-    @Test
+    /*@Test
     void insTodo2() {
         final Long VAL = 4L;
         //when
